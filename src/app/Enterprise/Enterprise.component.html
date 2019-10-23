@@ -1,13 +1,21 @@
-<form class="form-inline">
-   <div class="form-group mb-2">
+<div class="d-flex">  
+  <div class="form-inline mr-auto">
+    <div class="form-group mb-2">
       <label class="mr-2">Filtro:</label>
-      <input
-      type="text"
-      class="form-control mr-2"
+      <input [(ngModel)]="filtroLista" name="filtroLista"type="text"
+      class="form-control mr-2" 
       placeholder="buscar"
-      [(ngModel)]="filtroLista"/>
+      />
     </div>
-</form>
+  </div>
+  
+  <div>
+    <button class="btn btn-outline-primary" (click)="novoEnterprise(template)">
+      <i class="fa fa-plus-circle"></i> &nbsp;
+      Novo Cadastro
+    </button>
+  </div>
+</div>
 <h3>Filtro: {{filtroLista}}</h3>
 <table class="table table-striped">
   <thead class="thead-light">
@@ -18,28 +26,230 @@
       <th>Cnpj</th>
       <th>Data Cadastro</th>
       <th>Inscrição Estadual</th>
+      <th colspan="2" class="text-center">Opções</th>
     </tr>
-   </thead>
-  <tbody *ngIf=" enterprises && enterprises.length">
-     <tr *ngFor="let enterprise of enterprisefiltrados">
-       <td></td>
-       <td>{{ enterprise.nome}}</td>
-       <td>{{ enterprise.descricao}}</td>
-       <td>{{ enterprise.cnpj}}</td>
-       <td>{{ enterprise.dataCadastro}}</td>
-       <td>{{ enterprise.inscricaoEstadual}}</td>
-       <td>
-         <button class="btn btn-sucess"></button>
-         <button class="btn btn-danger"></button>
-       </td>
-     </tr>
-  </tbody>
-  <tfoot *ngIf="!enterprises.length">
-    <tr>
-        <td colspan="7" class="text-center">
-          <h4> Nenhum Registro Encontrado!</h4>
-        </td>
-    </tr>
-  </tfoot>
+  </thead>
+  <tbody>
+    <tr *ngFor="let enterprise of enterprisefiltrados">
+      <td>{{ enterprise.id }}</td>
+      <td>{{ enterprise.nome }}</td>
+      <td>{{ enterprise.descricao }}</td>
+      <td>{{ enterprise.cnpj }}</td>
+      <td>{{ enterprise.dataCadastro | DateTimeFormatPipe }}</td>
+      <td>{{ enterprise.inscricaoEstadual }}</td>
+      <td>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-sucess" 
+          tooltip="Editar" (click)="editarEnterprise(enterprise, template)">
+          <i class="fa fa-edit"></i>
+        </button>
+        <button class="btn btn-sm btn-danger" 
+        tooltip="Excluir" (click)="excluirenterprise(enterprise, confirm)">
+          <i class="fa fa-eraser"></i>
+        </button>
+      </div>
+    </td>
+    <td>
+        <a 
+          class="btn btn-sm btn-warning" 
+          tooltip="Edição Detalhada"
+          [routerLink]="['/enterprise',enterprise.id,'edit']">
+          <i class="fa fa-edit"></i>
+      </a>
+      </td>
+  </tr>
+</tbody>
+<tfoot *ngIf="!enterprises">
+  <tr>
+    <td colspan="7" class="text-center">
+      <h4> Nenhum Registro Encontrado!</h4>
+    </td>
+  </tr>
+</tfoot>
 </table>
 
+
+<div bsModal #template="bs-modal" class="modal fade" tabindex="-1"
+role="dialog" aria-labelledby="dialog-sizes-name1">
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 id="dialog-sizes-name1" class="modal-title pull-left">Large modal</h4>
+      <button type="button" class="close pull-right" (click)="template.hide()" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  <div class="modal-body">
+      <form [formGroup]="registerForm">
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label>Nome da Empresa</label>
+              <input
+              type="text"
+              class="form-control"
+              [ngClass]="{
+                'is-invalid':
+                registerForm.get('nome').errors && registerForm.get('nome').touched
+              }"
+              formControlName="nome"
+              placeholder=""
+              />
+              <div
+              *ngIf="
+              registerForm.get('nome').hasError('required') &&
+              registerForm.get('nome').touched
+              "
+              class="invalid-feedback"
+              >
+              O Nome da Empresa  é obrigatório!
+            </div>
+            <div
+            *ngIf="
+            registerForm.get('nome').hasError('minlength') &&
+            registerForm.get('nome').touched
+            "
+            class="invalid-feedback"
+            >
+            Nome deve ter no mínimo 4 caracteres!
+          </div>
+          <div
+          *ngIf="
+          registerForm.get('nome').hasError('maxlength') &&
+          registerForm.get('nome').touched
+          "
+          class="invalid-feedback"
+          >
+          Nome deve ter no máximo 50 caracteres!
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-8">
+          <label>Descrição da Empresa</label>
+          <input
+          type="text"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid':
+            registerForm.get('descricao').errors &&
+            registerForm.get('descricao').touched
+          }"
+          formControlName="descricao"
+          placeholder=""
+          />
+          <div *ngIf="registerForm.get('descricao').hasError('required') && registerForm.get('descricao').touched" class="invalid-feedback">
+            Verifique a descrição da empresa
+          </div>
+        </div>
+        <div class="form-group col-md-4">
+            <label>Data e Hora</label>
+            <input
+                  type="text"
+                  class="form-control"
+                  bsDatepicker
+                  [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY hh:mm a' }"
+                  [ngClass]="{
+                    'is-invalid':
+                    registerForm.get('dataCadastro').errors &&
+                    registerForm.get('dataCadastro').touched
+                  }"
+                  formControlName="dataCadastro"
+                  placeholder=""
+            />
+            <div  *ngIf="registerForm.get('dataCadastro').hasError('required') && registerForm.get('dataCadastro').touched" class="invalid-feedback">
+              Data e hora do cadastro é obrigatório!
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+              <label>Nª CNPJ</label>
+              <input
+              type="text"
+              class="form-control"
+              [ngClass]="{
+                'is-invalid':
+                registerForm.get('cnpj').errors &&
+                registerForm.get('cnpj').touched
+              }"
+              formControlName="cnpj"
+              placeholder=""
+              />
+              <div *ngIf="registerForm.get('cnpj').hasError('required') && registerForm.get('cnpj').touched"  class="invalid-feedback">
+                Quantidade é obrigatório!
+              </div>
+              <div *ngIf="registerForm.get('qtdPessoas').hasError('max') && registerForm.get('cnpj').touched"  class="invalid-feedback">
+                Quantidade máxima 11 Digitos 
+              </div>
+            </div> 
+            <div class="form-group col-md-4">
+                <label> Inscrição Estadual </label>
+                <input
+                type="text"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                  registerForm.get('inscricaoEstadual').errors &&
+                  registerForm.get('inscricaoEstadual').touched
+                }"
+                formControlName="inscricaoEstadual"
+                placeholder=""
+                />
+                <div  *ngIf="registerForm.get('inscricaoEstadual').hasError('required') && registerForm.get('inscricaoEstadual').touched" class="invalid-feedback">
+                  Inscrição Estadual é obrigatório!
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+  <div class="modal-footer d-flex">
+    <button class="btn btn-secondary" (click)="template.hide()">
+      Fechar
+    </button>
+    <button class="btn btn-primary ml-auto" [disabled]="!registerForm.valid" (click)="salvarAlteracao()">
+      Salvar Alterações
+    </button>
+  </div>
+
+  <br />
+<div bsModal #confirm="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="dialog-sizes-name1">
+	<div class="modal-dialog modal-sm">
+  		<div class="modal-content">
+    		<div class="modal-header">
+      			<h4 class="modal-title pull-left">
+        			Deletando Evento
+      			</h4>
+      			<button type="button" class="close pull-right" (click)="confirm.hide()" aria-label="Close">
+        			<span aria-hidden="true">&times;</span>
+      			</button>
+    		</div>
+    		<div class="modal-body">
+      			<p>{{bodyDeletarEvento}}</p>
+    		</div>    
+    		<div class="modal-footer btn-group d-flex">      
+      			<button type="button" class="btn btn-outline-primary" (click)="confirm.hide()">
+        			CANCELAR
+      			</button>
+      			<button type="button" class="btn btn-outline-danger" (click)="confirmeDelete(confirm)">
+          			DELETAR
+        		</button>
+    		</div>
+  		</div>
+	</div>
+</div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

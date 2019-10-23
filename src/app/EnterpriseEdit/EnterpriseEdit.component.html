@@ -1,0 +1,126 @@
+<div class="modal-body">
+  <form [formGroup]="registerForm">
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label>Nome da Empresa</label>
+          <input
+          type="text"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid':
+            registerForm.get('nome').errors && registerForm.get('nome').touched
+          }"
+          formControlName="nome"
+          placeholder=""
+          />
+          <div
+          *ngIf="
+          registerForm.get('nome').hasError('required') &&
+          registerForm.get('nome').touched
+          "
+          class="invalid-feedback"
+          >
+          O Nome da Empresa  é obrigatório!
+        </div>
+        <div
+        *ngIf="
+        registerForm.get('nome').hasError('minlength') &&
+        registerForm.get('nome').touched
+        "
+        class="invalid-feedback"
+        >
+        Nome deve ter no mínimo 4 caracteres!
+      </div>
+      <div
+      *ngIf="
+      registerForm.get('nome').hasError('maxlength') &&
+      registerForm.get('nome').touched
+      "
+      class="invalid-feedback"
+      >
+      Nome deve ter no máximo 50 caracteres!
+    </div>
+  </div>
+</div>
+<div class="form-row">
+    <div class="form-group col-md-8">
+      <label>Descrição da Empresa</label>
+      <input
+      type="text"
+      class="form-control"
+      [ngClass]="{
+        'is-invalid':
+        registerForm.get('descricao').errors &&
+        registerForm.get('descricao').touched
+      }"
+      formControlName="descricao"
+      placeholder=""
+      />
+      <div *ngIf="registerForm.get('descricao').hasError('required') && registerForm.get('descricao').touched" class="invalid-feedback">
+        Verifique a descrição da empresa
+      </div>
+    </div>
+    <div class="form-group col-md-4">
+        <label>Data e Hora</label>
+        <input
+              type="text"
+              class="form-control"
+              bsDatepicker
+              [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY hh:mm a' }"
+              [ngClass]="{
+                'is-invalid':
+                registerForm.get('dataCadastro').errors &&
+                registerForm.get('dataCadastro').touched
+              }"
+              formControlName="dataCadastro"
+              placeholder=""
+        />
+        <div  *ngIf="registerForm.get('dataCadastro').hasError('required') && registerForm.get('dataCadastro').touched" class="invalid-feedback">
+          Data e hora do cadastro é obrigatório!
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-3">
+          <label>Nª CNPJ</label>
+          <input
+          type="text"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid':
+            registerForm.get('cnpj').errors &&
+            registerForm.get('cnpj').touched
+          }"
+          formControlName="cnpj"
+          placeholder=""
+          />
+          <div *ngIf="registerForm.get('cnpj').hasError('required') && registerForm.get('cnpj').touched"  class="invalid-feedback">
+            Quantidade é obrigatório!
+          </div>
+          <div *ngIf="registerForm.get('qtdPessoas').hasError('max') && registerForm.get('cnpj').touched"  class="invalid-feedback">
+            Quantidade máxima 11 Digitos 
+          </div>
+        </div> 
+        <div class="form-group col-md-4">
+            <label> Inscrição Estadual </label>
+            <input
+            type="text"
+            class="form-control"
+            [ngClass]="{
+              'is-invalid':
+              registerForm.get('inscricaoEstadual').errors &&
+              registerForm.get('inscricaoEstadual').touched
+            }"
+            formControlName="inscricaoEstadual"
+            placeholder=""
+            />
+            <div  *ngIf="registerForm.get('inscricaoEstadual').hasError('required') && registerForm.get('inscricaoEstadual').touched" class="invalid-feedback">
+              Inscrição Estadual é obrigatório!
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <button class="btn btn-primary ml-auto" [disabled]="!registerForm.valid" (click)="salvarEnterprise()">
+      Salvar Alterações
+    </button>
