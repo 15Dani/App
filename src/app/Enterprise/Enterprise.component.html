@@ -1,0 +1,45 @@
+<form class="form-inline">
+   <div class="form-group mb-2">
+      <label class="mr-2">Filtro:</label>
+      <input
+      type="text"
+      class="form-control mr-2"
+      placeholder="buscar"
+      [(ngModel)]="filtroLista"/>
+    </div>
+</form>
+<h3>Filtro: {{filtroLista}}</h3>
+<table class="table table-striped">
+  <thead class="thead-light">
+    <tr>
+      <th>#</th>
+      <th>Nome</th>
+      <th>Descrição</th>
+      <th>Cnpj</th>
+      <th>Data Cadastro</th>
+      <th>Inscrição Estadual</th>
+    </tr>
+   </thead>
+  <tbody *ngIf=" enterprises && enterprises.length">
+     <tr *ngFor="let enterprise of enterprisefiltrados">
+       <td></td>
+       <td>{{ enterprise.nome}}</td>
+       <td>{{ enterprise.descricao}}</td>
+       <td>{{ enterprise.cnpj}}</td>
+       <td>{{ enterprise.dataCadastro}}</td>
+       <td>{{ enterprise.inscricaoEstadual}}</td>
+       <td>
+         <button class="btn btn-sucess"></button>
+         <button class="btn btn-danger"></button>
+       </td>
+     </tr>
+  </tbody>
+  <tfoot *ngIf="!enterprises.length">
+    <tr>
+        <td colspan="7" class="text-center">
+          <h4> Nenhum Registro Encontrado!</h4>
+        </td>
+    </tr>
+  </tfoot>
+</table>
+
